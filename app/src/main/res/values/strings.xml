@@ -4,6 +4,17 @@
     <string name="action_search">Search</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="register">REGISTER</string>
+    <string name="signup">SIGN UP</string>
+    <string name="welcome">WELCOME</string>
+    <string name="login">LOG IN</string>
+
+    <string name="err_msg_fullname">Enter your Full name</string>
+    <string name="err_msg_email">Enter your valid email address</string>
+    <string name="err_msg_pass_empty">Enter your password</string>
+    <string name="err_msg_pass_short">Your password must be at least 6 characters</string>
+    <string name="err_msg_cpass">Confirm password does not match the password.</string>
+    <string name="err_msg_phone">Enter your valid phone number</string>
 
     <string name="nav_item_home">Home</string>
     <string name="nav_item_friends">Friends</string>
