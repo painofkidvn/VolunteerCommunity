@@ -6,8 +6,9 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>s
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
-        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:colorBackground">@android:color/background_light</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
     </style>
 
 </resources>
