@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -25,6 +26,7 @@ import com.hat_dtu.volunteercommunity.helper.SessionManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressDialog pDialog;
     private SessionManager session;
     private SQLiteHandler db;
+    private TextView tvSignInNow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
         etCPassword.addTextChangedListener(new MyTextWatcher(etCPassword));
         etEmail.addTextChangedListener(new MyTextWatcher(etEmail));
         btnSignUp = (Button) findViewById(R.id.btn_sign_up);
+        tvSignInNow = (TextView)findViewById(R.id.tv_sign_in_now);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -81,6 +85,15 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 submitForm();
+            }
+        });
+
+        tvSignInNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

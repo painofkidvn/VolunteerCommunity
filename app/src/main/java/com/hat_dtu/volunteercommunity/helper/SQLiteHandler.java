@@ -23,10 +23,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "volunteercommunity";
 
-    // Login table name
+    // User table name
     private static final String TABLE_USER = "user";
 
-    // Login Table Columns names
+    // User Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "fullname";
     private static final String KEY_EMAIL = "email";
@@ -40,12 +40,12 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_USER + "("
+        String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE," + KEY_UID + " TEXT,"
                 + KEY_CREATED_AT + " TEXT" + ")";
-        db.execSQL(CREATE_LOGIN_TABLE);
+        db.execSQL(CREATE_USER_TABLE);
 
         Log.d(TAG, "Database tables created");
     }

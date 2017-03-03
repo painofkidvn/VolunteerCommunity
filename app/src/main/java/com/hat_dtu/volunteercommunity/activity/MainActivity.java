@@ -1,6 +1,10 @@
 package com.hat_dtu.volunteercommunity.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,13 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.hat_dtu.volunteercommunity.R;
+import com.hat_dtu.volunteercommunity.fragment.HomeFragment;
 import com.hat_dtu.volunteercommunity.helper.SQLiteHandler;
 import com.hat_dtu.volunteercommunity.helper.SessionManager;
 
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
-
 
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
@@ -49,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         // Fetching user details from sqlite
         HashMap<String, String> user = db.getUserDetails();
+
+
+
 
     }
     /**
@@ -91,7 +98,31 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     }
     @Override
     public void onDrawerItemSelected(View view, int position) {
+        displayView(position);
 
+    }
+
+    private void displayView(int position) {
+        Fragment fragment = null;
+        String title = getString(R.string.app_name);
+        switch (position) {
+            case 0:
+                fragment = new HomeFragment();
+                title = getString(R.string.title_home);
+                break;
+            default:
+                break;
+        }
+
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container_body, fragment);
+            fragmentTransaction.commit();
+
+            // set the toolbar title
+            getSupportActionBar().setTitle(title);
+        }
     }
 
 }

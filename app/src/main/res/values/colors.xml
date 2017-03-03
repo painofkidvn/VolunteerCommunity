@@ -7,4 +7,5 @@
     <color name="colorAccent">#ffffff</color>
     <color name="textPrimary">#000000</color>
     <color name="separate">#FAFAFA</color>
+    <color name="main">#FFFFFF</color>
 </resources>

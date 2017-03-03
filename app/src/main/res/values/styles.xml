@@ -10,7 +10,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorHint">@color/textColorPrimary</item>
-        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/main</item>
         <item name="android:textColor">@color/textPrimary</item>
         <item name="textColorError">@color/textColorPrimary</item>
     </style>

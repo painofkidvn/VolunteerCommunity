@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressDialog pDialog;
     private SessionManager session;
     private SQLiteHandler db;
+    private TextView tvSignUp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email_l);
         inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_password_l);
         btnLogin = (Button) findViewById(R.id.btn_login);
+        tvSignUp = (TextView)findViewById(R.id.tv_dont_have_acc);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -79,6 +82,16 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             "Please enter the credentials!", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        tvSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                finish();
+
             }
         });
     }

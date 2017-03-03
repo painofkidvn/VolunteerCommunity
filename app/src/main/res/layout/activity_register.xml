@@ -89,6 +89,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/signup"
                 android:textColor="@color/colorPrimary"/>
+            <TextView
+                android:id="@+id/tv_sign_in_now"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? Sign In now"
+                android:textColor="@color/textColorPrimary"
+                android:gravity="center"/>
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>

@@ -54,6 +54,14 @@
             android:layout_height="wrap_content"
             android:text="@string/login"
             android:textColor="@color/colorPrimary"/>
+        <TextView
+            android:id="@+id/tv_dont_have_acc"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account? Sign Up"
+            android:textColor="@color/textColorPrimary"
+            android:gravity="center"/>
     </LinearLayout>
 
 </RelativeLayout>
