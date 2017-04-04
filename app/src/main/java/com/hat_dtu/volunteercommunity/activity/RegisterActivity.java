@@ -34,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private EditText etFullname, etPassword, etCPassword, etEmail;
     private Button btnSignUp;
-    private String fullname, password, cpassword, email;
+    private String name, password, cpassword, email;
     private TextInputLayout inputLayoutFullname, inputLayoutPassword, inputLayoutCPassword, inputLayoutEmail;
     private ProgressDialog pDialog;
     private SessionManager session;
@@ -112,8 +112,8 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private boolean validateName() {
-        fullname = etFullname.getText().toString().trim();
-        if (fullname.isEmpty()) {
+        name = etFullname.getText().toString().trim();
+        if (name.isEmpty()) {
             inputLayoutFullname.setError(getString(R.string.err_msg_fullname));
             requestFocus(etFullname);
             return false;
@@ -203,23 +203,22 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d(TAG, "Register Response: " + response.toString());
                 hideDialog();
                 try {
-                    JSONObject jObj = new JSONObject(response);
+                    JSONObject jObj = new JSONObject(response.substring(3));
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
                         // User successfully stored in MySQL
                         // Now store the user in sqlite
-                        String uid = jObj.getString("uid");
-
-                        JSONObject user = jObj.getJSONObject("user");
-                        String fullname = user.getString("fullname");
-                        String email = user.getString("email");
-                        String created_at = user.getString("created_at");
+                        String api_key = jObj.getString("api_key");
+                        String name = jObj.getString("name");
+                        String email = jObj.getString("email");
+                        String created_at = jObj.getString("created_at");
 
 
                         // Inserting row in users table
-                        db.addUser(fullname, email, uid, created_at);
-
+                        db.addUser(name, email, api_key, created_at);
+                       // AppConfig.API_KEY = api_key;
+                       // session.setLogin(true);
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
                         // Launch login activity
@@ -230,12 +229,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                         // Error occurred in registration. Get the error
                         // message
-                        String errorMsg = jObj.getString("error_msg");
+                        String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
                                 errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -254,7 +254,7 @@ public class RegisterActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("fullname", fullname);
+                params.put("name", name);
                 params.put("email", email);
                 params.put("password", password);
                 return params;

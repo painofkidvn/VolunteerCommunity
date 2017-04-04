@@ -22,6 +22,7 @@ import com.hat_dtu.volunteercommunity.app.AppController;
 import com.hat_dtu.volunteercommunity.helper.SQLiteHandler;
 import com.hat_dtu.volunteercommunity.helper.SessionManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         etEmail = (EditText) findViewById(R.id.et_email_l);
         etPassword = (EditText) findViewById(R.id.et_password_l);
         inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email_l);
@@ -115,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                 hideDialog();
 
                 try {
-                    JSONObject jObj = new JSONObject(response);
+                    JSONObject jObj = new JSONObject(response.substring(3));
                     boolean error = jObj.getBoolean("error");
 
                     // Check for error node in json
@@ -125,15 +125,16 @@ public class LoginActivity extends AppCompatActivity {
                         session.setLogin(true);
 
                         // Now store the user in SQLite
-                        String uid = jObj.getString("uid");
+                        String api_key = jObj.getString("api_key");
+                        String name = jObj.getString("name");
+                        String email = jObj.getString("email");
+                        String created_at = jObj.getString("created_at");
 
-                        JSONObject user = jObj.getJSONObject("user");
-                        String fullname = user.getString("fullname");
-                        String email = user.getString("email");
-                        String created_at = user.getString("created_at");
+                        //AppConfig.API_KEY = api_key;
+                        //session.setLogin(true);
 
                         // Inserting row in users table
-                        db.addUser(fullname, email, uid, created_at);
+                        db.addUser(name, email, api_key, created_at);
 
                         // Launch main activity
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -141,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     } else {
                         // Error in login. Get the error message
-                        String errorMsg = jObj.getString("error_msg");
+                        String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
                                 errorMsg, Toast.LENGTH_LONG).show();
                     }

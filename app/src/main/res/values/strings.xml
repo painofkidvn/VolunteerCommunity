@@ -9,6 +9,11 @@
     <string name="welcome">WELCOME</string>
     <string name="login">LOG IN</string>
     <string name="action_logout">Logout</string>
+    <string name="charity">Charity Location</string>
+    <string name="title">Title</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="activity">Activity</string>
 
     <string name="err_msg_fullname">Enter your Full name</string>
     <string name="err_msg_email">Enter your valid email address</string>
@@ -16,9 +21,12 @@
     <string name="err_msg_pass_short">Your password must be at least 6 characters</string>
     <string name="err_msg_cpass">Confirm password does not match the password.</string>
     <string name="err_msg_phone">Enter your valid phone number</string>
+    <string name="err_msg_title">Title cannot be blank</string>
+    <string name="err_msg_address">Address cannot be blank</string>
+    <string name="err_msg_activity">Activity cannot be blank</string>
 
     <string name="nav_item_home">Home</string>
-    <string name="nav_item_activities">Activity</string>
+    <string name="nav_item_activities">Charity</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
@@ -26,7 +34,7 @@
         <item>@string/nav_item_activities</item>>
     </string-array>
 
-    <string name="title_activities">Activity</string>
+    <string name="title_charity">Charity</string>
     <string name="title_home">Home</string>
 
     <!-- TODO: Remove or change this placeholder text -->

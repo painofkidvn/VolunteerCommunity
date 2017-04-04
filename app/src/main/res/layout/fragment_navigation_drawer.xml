@@ -10,14 +10,35 @@
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:layout_alignParentTop="true"
+        android:gravity="center|start"
+        android:padding="10dp"
         android:background="@color/colorPrimary">
 
         <ImageView
+            android:id="@+id/iv_profile"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/ic_profile"
-            android:scaleType="fitCenter"
-            android:layout_centerInParent="true" />
+            android:scaleType="fitStart" />
+        <TextView
+            android:id="@+id/tv_name"
+            android:paddingLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_profile"
+            android:text="Lê Tuấn Anh"
+            android:textSize="27sp"
+            android:textColor="#ffff"/>
+        <TextView
+            android:id="@+id/tv_email"
+            android:paddingLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_profile"
+            android:layout_below="@+id/tv_name"
+            android:text="a@b.c"
+            android:textSize="20sp"
+            android:textColor="#ffff"/>
 
     </RelativeLayout>
 
