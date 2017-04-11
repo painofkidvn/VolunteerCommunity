@@ -1,7 +1,6 @@
 package com.hat_dtu.volunteercommunity.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,15 +16,12 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.hat_dtu.volunteercommunity.R;
-import com.hat_dtu.volunteercommunity.activity.CharityActivity;
-import com.hat_dtu.volunteercommunity.activity.MainActivity;
-import com.hat_dtu.volunteercommunity.adapter.CharityAdapter;
+import com.hat_dtu.volunteercommunity.adapter.PlaceAdapter;
 import com.hat_dtu.volunteercommunity.app.AppConfig;
 import com.hat_dtu.volunteercommunity.app.AppController;
-import com.hat_dtu.volunteercommunity.model.Charity;
+import com.hat_dtu.volunteercommunity.model.Place;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,13 +35,13 @@ import java.util.Map;
  * Created by paino on 4/2/2017.
  */
 
-public class CharityFragment extends Fragment {
-    private static final String TAG = CharityFragment.class.getSimpleName();
+public class PlaceFragment extends Fragment {
+    private static final String TAG = PlaceFragment.class.getSimpleName();
     ProgressDialog progressDialog;
     RecyclerView recyclerView;
-    CharityAdapter charityAdapter;
-    ArrayList<Charity> charities = new ArrayList<>();
-    public CharityFragment() {
+    PlaceAdapter placeAdapter;
+    ArrayList<Place> places = new ArrayList<>();
+    public PlaceFragment() {
     }
 
     @Override
@@ -61,14 +57,13 @@ public class CharityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_charity, container, false);
+        View view = inflater.inflate(R.layout.fragment_place, container, false);
 
 
         recyclerView = (RecyclerView)view.findViewById(R.id.rv_recycler_view);
         recyclerView.setHasFixedSize(true);
-
-        charityAdapter = new CharityAdapter(charities);
-        recyclerView.setAdapter(charityAdapter);
+        placeAdapter = new PlaceAdapter(places, getContext());
+        recyclerView.setAdapter(placeAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -85,49 +80,47 @@ public class CharityFragment extends Fragment {
             progressDialog.dismiss();
 
     }
-
-    private void onLoading(){
-        String tag_string_req = "req_get_all_charity";
+    public void onLoading(){
+        String tag_string_req = "req_get_all_place";
         progressDialog.setMessage("Loading ...");
         showDialog();
-        Log.d(TAG, AppConfig.API_KEY);
         StringRequest strReq = new StringRequest(Request.Method.GET,
-                AppConfig.URL_CHARITY_F, new Response.Listener<String>() {
+                AppConfig.URL_PLACE_F, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Create Response: " + response.toString());
                 hideDialog();
                 try {
-                    JSONObject jObj = new JSONObject(response.substring(3));
+                    JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
 
 
                     if (!error) {
-                        JSONArray jsonArray = jObj.getJSONArray("charities");
+                        places.clear();
+                        JSONArray jsonArray = jObj.getJSONArray("places");
                         for(int i = 0; i < jsonArray.length(); i++){
 
                             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                            String id = jsonObject.getString("id");
+                            int id = jsonObject.getInt("id");
                             String title = jsonObject.getString("title");
                             String address = jsonObject.getString("address");
                             String phone = jsonObject.getString("phone");
                             String activity = jsonObject.getString("activity");
-                            String rating = jsonObject.getString("rating");
                             String lat = jsonObject.getString("lat");
                             String lng = jsonObject.getString("lng");
 
-                            charities.add(new Charity(id, title, address, phone, activity, rating, lat, lng));
+                            places.add(new Place(id, title, address, phone, activity, lat, lng));
                         }
-
-                        Toast.makeText(getActivity(), "Loaded", Toast.LENGTH_LONG).show();
+                        placeAdapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(), "Loaded", Toast.LENGTH_LONG).show();
 
                     } else {
 
                         // Error occurred in registration. Get the error
                         // message
                         String errorMsg = jObj.getString("message");
-                        Toast.makeText(getActivity(),
+                        Toast.makeText(getContext(),
                                 errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {

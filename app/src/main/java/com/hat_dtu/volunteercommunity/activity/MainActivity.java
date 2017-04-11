@@ -1,8 +1,6 @@
 package com.hat_dtu.volunteercommunity.activity;
 
-import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,12 +17,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.hat_dtu.volunteercommunity.R;
-import com.hat_dtu.volunteercommunity.fragment.CharityFragment;
+import com.hat_dtu.volunteercommunity.fragment.PlaceFragment;
 import com.hat_dtu.volunteercommunity.fragment.HomeFragment;
 import com.hat_dtu.volunteercommunity.helper.SQLiteHandler;
 import com.hat_dtu.volunteercommunity.helper.SessionManager;
-
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
@@ -33,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private SQLiteHandler db;
     private SessionManager session;
     private TextView tvName, tvEmail;
+    private Fragment temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             fragmentTransaction.commit();
             getSupportActionBar().setTitle("Home");
 
+
         }
 
         // SqLite database handler
@@ -67,11 +65,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (!session.isLoggedIn()) {
             logoutUser();
         }
-
-        // Fetching user details from sqlite
-        HashMap<String, String> user = db.getUserDetails();
-
-
 
 
     }
@@ -89,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         startActivity(intent);
         finish();
     }
+    private boolean show = true;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -98,6 +92,17 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        MenuItem refreshItem = menu.findItem(R.id.action_refresh);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        if(show) {
+            searchItem.setVisible(true);
+            refreshItem.setVisible(true);
+        }
+        else{
+            searchItem.setVisible(false);
+            refreshItem.setVisible(false);
+        }
+
         return true;
     }
     @Override
@@ -106,12 +111,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-
-            return true;
+        if(id == R.id.action_refresh){
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container_body, new HomeFragment());
+            fragmentTransaction.commit();
+            getSupportActionBar().setTitle("Home");
         }
+        //noinspection SimplifiableIfStatement
         if(id == R.id.action_logout){
 
             logoutUser();
@@ -132,10 +139,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         switch (position) {
             case 0:
                 fragment = new HomeFragment();
+                temp = fragment;
+                show = true;
                 title = getString(R.string.title_home);
                 break;
             case 1:
-                fragment = new CharityFragment();
+                fragment = new PlaceFragment();
+                show = false;
                 title = getString(R.string.title_charity);
                 break;
             default:

@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +20,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.hat_dtu.volunteercommunity.R;
 import com.hat_dtu.volunteercommunity.app.AppConfig;
 import com.hat_dtu.volunteercommunity.app.AppController;
-import com.hat_dtu.volunteercommunity.fragment.HomeFragment;
 import com.hat_dtu.volunteercommunity.helper.SQLiteHandler;
 
 import org.json.JSONException;
@@ -33,8 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CharityActivity extends AppCompatActivity {
-    private static final String TAG = CharityActivity.class.getSimpleName();
+public class PlaceActivity extends AppCompatActivity {
+    private static final String TAG = PlaceActivity.class.getSimpleName();
     private EditText etTitle, etAddress, etPhone, etActivity;
     private Button btnCharityRes;
     private TextInputLayout inputLayoutTitle, inputLayoutAddress, inputLayoutPhone, inputLayoutActivity;
@@ -44,7 +41,7 @@ public class CharityActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_charity);
+        setContentView(R.layout.activity_place);
 
         etTitle = (EditText)findViewById(R.id.et_title);
         etAddress = (EditText)findViewById(R.id.et_address);
@@ -101,23 +98,21 @@ public class CharityActivity extends AppCompatActivity {
         showDialog();
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.URL_CHARITY_F, new Response.Listener<String>() {
+                AppConfig.URL_PLACE_F, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Create Response: " + response.toString());
                 hideDialog();
                 try {
+                    Log.d(TAG, response);
                     JSONObject jObj = new JSONObject(response.substring(3));
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
 
-
-                        Toast.makeText(getApplicationContext(), "Charity Location successfully created", Toast.LENGTH_LONG).show();
-
-                        // Launch login activity
-                        Intent intent = new Intent(CharityActivity.this, MainActivity.class);
+                        Toast.makeText(getApplicationContext(), "Place Location successfully created", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(PlaceActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
@@ -130,6 +125,8 @@ public class CharityActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
                 }
 
             }
@@ -159,7 +156,6 @@ public class CharityActivity extends AppCompatActivity {
                 params.put("address", address);
                 params.put("phone", phone);
                 params.put("activity", activity);
-                params.put("rating", rating);
                 params.put("lat", lat);
                 params.put("lng", lng);
                 return params;

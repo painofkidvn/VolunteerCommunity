@@ -37,10 +37,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_CREATED_AT = "created_at";
 
     /**
-     * Charity session
+     * Place session
      */
 
-    //Charity table name
+    //Place table name
     private static final String TABLE_CHARITY = "charity";
 
     //Chairty Table Columns names
@@ -78,18 +78,18 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + KEY_CREATED_AT + " TEXT" + ")";
         db.execSQL(CREATE_USER_TABLE);
 
-        String CREATE_CHARITY_TABLE = "CREATE TABLE " + TABLE_CHARITY + "("
-                + KEY_ID_C + " INTEGER PRIMARY KEY,"
-                + KEY_TITLE + " TEXT," + KEY_ADDRESS + " TEXT," + KEY_PHONE + " TEXT,"
-                + KEY_ACTIVITY + " TEXT," + KEY_RATING + " TEXT, "
-                + KEY_LAT + " TEXT, " + KEY_LNG + " TEXT" + ")";
-        db.execSQL(CREATE_CHARITY_TABLE);
-
-        String CREATE_USER_CHARITY_TABLE = "CREATE TABLE " + TABLE_USER_CHARITY + "("
-                + KEY_ID_UC + " INTEGER PRIMARY KEY,"
-                + KEY_USER_ID + " INTEGER,"
-                + KEY_CHARITY_ID + " INTEGER," + ")";
-        db.execSQL(CREATE_USER_CHARITY_TABLE);
+//        String CREATE_CHARITY_TABLE = "CREATE TABLE " + TABLE_CHARITY + "("
+//                + KEY_ID_C + " INTEGER PRIMARY KEY,"
+//                + KEY_TITLE + " TEXT," + KEY_ADDRESS + " TEXT," + KEY_PHONE + " TEXT,"
+//                + KEY_ACTIVITY + " TEXT," + KEY_RATING + " TEXT, "
+//                + KEY_LAT + " TEXT, " + KEY_LNG + " TEXT" + ")";
+//        db.execSQL(CREATE_CHARITY_TABLE);
+//
+//        String CREATE_USER_CHARITY_TABLE = "CREATE TABLE " + TABLE_USER_CHARITY + "("
+//                + KEY_ID_UC + " INTEGER PRIMARY KEY,"
+//                + KEY_USER_ID + " INTEGER,"
+//                + KEY_CHARITY_ID + " INTEGER," + ")";
+//        db.execSQL(CREATE_USER_CHARITY_TABLE);
         Log.d(TAG, "Database tables created");
 
     }
@@ -99,8 +99,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHARITY);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_CHARITY);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHARITY);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_CHARITY);
 
 
         // Create tables again
@@ -184,7 +184,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         addUserCharity(user_id, id);
         db.close(); // Closing database connection
 
-        Log.d(TAG, "New Charity Location inserted into sqlite: " + id);
+        Log.d(TAG, "New Place Location inserted into sqlite: " + id);
     }
 
     /**
@@ -228,7 +228,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Delete a Charity
+     * Delete a Place
      */
     public void deleteCharity(long user_id, long charity_id) {
         SQLiteDatabase db = this.getWritableDatabase();

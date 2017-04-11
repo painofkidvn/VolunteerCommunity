@@ -5,11 +5,13 @@ import android.os.Bundle;
 
 import com.hat_dtu.volunteercommunity.R;
 
-public class CharityDetailActivity extends AppCompatActivity {
+public class PlaceDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_charity_detail);
+        setContentView(R.layout.activity_place_detail);
+
+
     }
 }

@@ -9,14 +9,14 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.hat_dtu.volunteercommunity.activity.CharityActivity">
+        tools:context="com.hat_dtu.volunteercommunity.activity.PlaceActivity">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:gravity="center"
-            android:text="@string/charity"
+            android:text="@string/place"
             android:textColor="@color/textColorPrimary"
             android:textSize="30sp" />
 

@@ -203,22 +203,26 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d(TAG, "Register Response: " + response.toString());
                 hideDialog();
                 try {
-                    JSONObject jObj = new JSONObject(response.substring(3));
+                    JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
                         // User successfully stored in MySQL
                         // Now store the user in sqlite
-                        String api_key = jObj.getString("api_key");
-                        String name = jObj.getString("name");
-                        String email = jObj.getString("email");
-                        String created_at = jObj.getString("created_at");
+
+                        JSONObject objectUser = jObj.getJSONObject("user");
+                        String user_id = objectUser.getString("id");
+                        String api_key = objectUser.getString("api_key");
+                        String name = objectUser.getString("name");
+                        String email = objectUser.getString("email");
+                        String created_at = objectUser.getString("created_at");
 
 
                         // Inserting row in users table
                         db.addUser(name, email, api_key, created_at);
-                       // AppConfig.API_KEY = api_key;
-                       // session.setLogin(true);
+                        AppConfig.API_KEY = api_key;
+                        AppConfig.USER_ID = user_id;
+                        session.setLogin(true);
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
                         // Launch login activity

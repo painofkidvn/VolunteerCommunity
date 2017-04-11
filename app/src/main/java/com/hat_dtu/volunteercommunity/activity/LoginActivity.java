@@ -115,23 +115,22 @@ public class LoginActivity extends AppCompatActivity {
                 hideDialog();
 
                 try {
-                    JSONObject jObj = new JSONObject(response.substring(3));
+                    JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
 
                     // Check for error node in json
                     if (!error) {
-                        // user successfully logged in
-                        // Create login session
-                        session.setLogin(true);
 
                         // Now store the user in SQLite
-                        String api_key = jObj.getString("api_key");
-                        String name = jObj.getString("name");
-                        String email = jObj.getString("email");
-                        String created_at = jObj.getString("created_at");
+                        JSONObject objectUser = jObj.getJSONObject("user");
+                        String user_id = objectUser.getString("id");
+                        String api_key = objectUser.getString("api_key");
+                        String name = objectUser.getString("name");
+                        String email = objectUser.getString("email");
+                        String created_at = objectUser.getString("created_at");
 
-                        //AppConfig.API_KEY = api_key;
-                        //session.setLogin(true);
+                        AppConfig.API_KEY = api_key;
+                        session.setLogin(true);
 
                         // Inserting row in users table
                         db.addUser(name, email, api_key, created_at);

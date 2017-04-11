@@ -4,29 +4,31 @@ package com.hat_dtu.volunteercommunity.model;
  * Created by paino on 4/2/2017.
  */
 
-public class Charity {
-    private String id, title, address, phone, activity, rating, lat, lng;
+public class Place {
+    private int id;
+    private String title, address, phone, activity, lat, lng;
+    private boolean mChecked;
+    private boolean mActivateExpansion = false;
 
-    public Charity(){
+    public Place(){
 
     }
 
-    public Charity(String id, String title, String address, String phone, String activity, String rating, String lat, String lng) {
+    public Place(int id, String title, String address, String phone, String activity, String lat, String lng) {
         this.id = id;
         this.title = title;
         this.address = address;
         this.phone = phone;
         this.activity = activity;
-        this.rating = rating;
         this.lat = lat;
         this.lng = lng;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -62,13 +64,6 @@ public class Charity {
         this.activity = activity;
     }
 
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
 
     public String getLat() {
         return lat;
@@ -84,5 +79,20 @@ public class Charity {
 
     public void setLng(String lng) {
         this.lng = lng;
+    }
+    public boolean isChecked() {
+        return mChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        mChecked = checked;
+    }
+
+    public boolean isActivateExpansion() {
+        return mActivateExpansion;
+    }
+
+    public void setActivateExpansion(boolean activateExpansion) {
+        mActivateExpansion = activateExpansion;
     }
 }

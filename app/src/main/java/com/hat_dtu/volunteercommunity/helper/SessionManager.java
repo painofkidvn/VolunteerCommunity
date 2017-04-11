@@ -28,7 +28,7 @@ public class SessionManager {
 
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
 
-    //private static String Key_API = "";
+    private static String Key_API = "";
 
     public SessionManager(Context context) {
         this._context = context;
@@ -39,7 +39,7 @@ public class SessionManager {
     public void setLogin(boolean isLoggedIn) {
 
         editor.putBoolean(KEY_IS_LOGGEDIN, isLoggedIn);
-        //editor.putString(Key_API, AppConfig.API_KEY);
+        editor.putString(Key_API, AppConfig.API_KEY);
 
         // commit changes
         editor.commit();
@@ -51,7 +51,7 @@ public class SessionManager {
         return pref.getBoolean(KEY_IS_LOGGEDIN, false);
     }
 
-    //public String getKey(){
-      //  return pref.getString(Key_API, AppConfig.API_KEY);
-    //}
+    public String getKey(){
+        return pref.getString(Key_API, AppConfig.API_KEY);
+    }
 }
