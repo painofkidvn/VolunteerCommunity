@@ -16,9 +16,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.hat_dtu.volunteercommunity.R;
 import com.hat_dtu.volunteercommunity.adapter.NavigationDrawerAdapter;
+import com.hat_dtu.volunteercommunity.app.AppConfig;
 import com.hat_dtu.volunteercommunity.model.NavDrawerItem;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class FragmentDrawer extends Fragment {
     private View containerView;
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
+    private TextView tvName, tvEmail;
 
     public FragmentDrawer() {
 
@@ -73,6 +76,10 @@ public class FragmentDrawer extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
 
+        tvName = (TextView)layout.findViewById(R.id.tv_info_name);
+        tvEmail = (TextView)layout.findViewById(R.id.tv_info_email);
+        tvName.setText(AppConfig.KEY_NAME);
+        tvEmail.setText(AppConfig.KEY_EMAIL);
         adapter = new NavigationDrawerAdapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

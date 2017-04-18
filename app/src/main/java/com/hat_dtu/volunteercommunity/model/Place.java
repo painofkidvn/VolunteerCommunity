@@ -5,7 +5,7 @@ package com.hat_dtu.volunteercommunity.model;
  */
 
 public class Place {
-    private int id;
+    private int id, user_id;
     private String title, address, phone, activity, lat, lng;
     private boolean mChecked;
     private boolean mActivateExpansion = false;
@@ -14,7 +14,7 @@ public class Place {
 
     }
 
-    public Place(int id, String title, String address, String phone, String activity, String lat, String lng) {
+    public Place(int id, String title, String address, String phone, String activity, String lat, String lng, int user_id) {
         this.id = id;
         this.title = title;
         this.address = address;
@@ -22,6 +22,15 @@ public class Place {
         this.activity = activity;
         this.lat = lat;
         this.lng = lng;
+        this.user_id = user_id;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public int getId() {

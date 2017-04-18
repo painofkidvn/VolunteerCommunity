@@ -2,7 +2,7 @@
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
+    android:id="@+id/my_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
@@ -23,38 +23,36 @@
             android:padding="5dp">
 
             <TextView
-                android:id="@+id/tv_title"
+                android:id="@+id/tv_a_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trung Tâm ABC"
                 android:textSize="18sp"></TextView>
 
             <TextView
-                android:id="@+id/tv_address"
-                android:layout_below="@+id/tv_title"
+                android:id="@+id/tv_a_address"
+                android:layout_below="@+id/tv_a_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="323 Lê Thanh Nghị"></TextView>
 
             <TextView
-                android:id="@+id/tv_phone"
-                android:layout_below="@+id/tv_address"
+                android:id="@+id/tv_a_phone"
+                android:layout_below="@+id/tv_a_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="09777277575"></TextView>
-            <TextView
-                android:id="@+id/tv_options"
+            <ImageButton
+                android:id="@+id/btn_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_location"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:text="   &#8942;   "
-                android:textAppearance="?android:textAppearanceLarge" />
-
-
+                android:background="#00ffffff"/>
         </RelativeLayout>
         <TextView
-            android:id="@+id/tv_activity"
+            android:id="@+id/tv_a_activity"
             android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

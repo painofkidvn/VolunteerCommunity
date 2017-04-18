@@ -8,28 +8,39 @@ import com.google.maps.android.clustering.ClusterItem;
  */
 
 public class MyItem implements ClusterItem {
-    private final LatLng mPosition;
-    private final String mTitle;
-    private final String mSnippet;
+    private final LatLng position;
+    private final String title;
+    private final String address;
+    private final String phone;
+    private final String activity;
 
-    public MyItem(double lat, double lng, String title, String snippet) {
-        mPosition = new LatLng(lat, lng);
-        mTitle = title;
-        mSnippet = snippet;
+    public MyItem(double lat, double lng, String title, String address, String phone, String activity) {
+        this.position = new LatLng(lat, lng);
+        this.title = title;
+        this.address = address;
+        this.phone = phone;
+        this.activity = activity;
     }
 
     @Override
     public LatLng getPosition() {
-        return mPosition;
+        return this.position;
     }
 
     @Override
     public String getTitle() {
-        return mTitle;
+        return this.title;
+    }
+    public String getPhone() {
+        return this.phone;
+    }
+
+    public String getActivity() {
+        return this.activity;
     }
 
     @Override
     public String getSnippet() {
-        return mSnippet;
+        return this.address;
     }
 }

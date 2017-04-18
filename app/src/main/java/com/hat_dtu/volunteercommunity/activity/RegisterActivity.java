@@ -74,6 +74,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
+            AppConfig.API_KEY = session.getKey();
+            AppConfig.KEY_EMAIL = session.getEMAIL();
+            AppConfig.KEY_NAME = session.getName();
+
             // User is already logged in. Take him to main activity
             Intent intent = new Intent(RegisterActivity.this,
                     MainActivity.class);
@@ -221,7 +225,8 @@ public class RegisterActivity extends AppCompatActivity {
                         // Inserting row in users table
                         db.addUser(name, email, api_key, created_at);
                         AppConfig.API_KEY = api_key;
-                        AppConfig.USER_ID = user_id;
+                        AppConfig.KEY_NAME = name;
+                        AppConfig.KEY_EMAIL = email;
                         session.setLogin(true);
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
@@ -235,7 +240,7 @@ public class RegisterActivity extends AppCompatActivity {
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -21,7 +21,7 @@
             android:src="@drawable/ic_profile"
             android:scaleType="fitStart" />
         <TextView
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_info_name"
             android:paddingLeft="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,12 +30,12 @@
             android:textSize="27sp"
             android:textColor="#ffff"/>
         <TextView
-            android:id="@+id/tv_email"
+            android:id="@+id/tv_info_email"
             android:paddingLeft="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/iv_profile"
-            android:layout_below="@+id/tv_name"
+            android:layout_below="@+id/tv_info_name"
             android:text="a@b.c"
             android:textSize="20sp"
             android:textColor="#ffff"/>

@@ -59,9 +59,11 @@ public class LoginActivity extends AppCompatActivity {
 
         // Session manager
         session = new SessionManager(getApplicationContext());
-
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
+            AppConfig.API_KEY = session.getKey();
+            AppConfig.KEY_EMAIL = session.getEMAIL();
+            AppConfig.KEY_NAME = session.getName();
             // User is already logged in. Take him to main activity
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
@@ -130,8 +132,9 @@ public class LoginActivity extends AppCompatActivity {
                         String created_at = objectUser.getString("created_at");
 
                         AppConfig.API_KEY = api_key;
+                        AppConfig.KEY_NAME = name;
+                        AppConfig.KEY_EMAIL = email;
                         session.setLogin(true);
-
                         // Inserting row in users table
                         db.addUser(name, email, api_key, created_at);
 
@@ -143,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Error in login. Get the error message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg == "" ? "Connection error": errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     // JSON error

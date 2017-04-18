@@ -28,7 +28,9 @@ public class SessionManager {
 
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
 
-    private static String Key_API = "";
+    private static String Key_API = "KEY";
+    private static String Key_NAME = "NAME";
+    private static String Key_EMAIL = "EMAIL";
 
     public SessionManager(Context context) {
         this._context = context;
@@ -36,10 +38,21 @@ public class SessionManager {
         editor = pref.edit();
     }
 
+    public String getName() {
+        return pref.getString(Key_NAME,"");
+    }
+
+    public String getEMAIL() {
+        return pref.getString(Key_EMAIL,"");
+    }
+
     public void setLogin(boolean isLoggedIn) {
 
         editor.putBoolean(KEY_IS_LOGGEDIN, isLoggedIn);
         editor.putString(Key_API, AppConfig.API_KEY);
+        editor.putString(Key_NAME, AppConfig.KEY_NAME);
+        editor.putString(Key_EMAIL, AppConfig.KEY_EMAIL);
+
 
         // commit changes
         editor.commit();
@@ -52,6 +65,6 @@ public class SessionManager {
     }
 
     public String getKey(){
-        return pref.getString(Key_API, AppConfig.API_KEY);
+        return pref.getString(Key_API,"");
     }
 }

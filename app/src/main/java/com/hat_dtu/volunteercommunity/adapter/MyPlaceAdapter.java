@@ -2,9 +2,9 @@ package com.hat_dtu.volunteercommunity.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.transition.TransitionManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
@@ -22,10 +22,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hat_dtu.volunteercommunity.R;
+import com.hat_dtu.volunteercommunity.activity.PlaceDetailActivity;
 import com.hat_dtu.volunteercommunity.app.AppConfig;
 import com.hat_dtu.volunteercommunity.app.AppController;
-import com.hat_dtu.volunteercommunity.fragment.HomeFragment;
-import com.hat_dtu.volunteercommunity.fragment.PlaceFragment;
 import com.hat_dtu.volunteercommunity.model.Place;
 
 import org.json.JSONException;
@@ -39,14 +38,16 @@ import java.util.Map;
  * Created by paino on 4/2/2017.
  */
 
-public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.MyViewHolder> {
-    private static final String TAG = PlaceAdapter.class.getSimpleName();
+public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHolder> {
+    private static final String TAG = MyPlaceAdapter.class.getSimpleName();
     private ArrayList<Place> places;
     private int mExpandedPosition = -1;
     private Context context;
-    public PlaceAdapter(ArrayList<Place> places, Context context){
+    private LayoutInflater mInflater;
+    public MyPlaceAdapter(ArrayList<Place> places, Context context){
         this.places = places;
         this.context = context;
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.MyViewHolder
         });
         holder.options.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 PopupMenu popupMenu = new PopupMenu(context, holder.options);
                 popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -86,6 +87,18 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.MyViewHolder
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()){
                             case R.id.edit:
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("id", place.getId());
+                                bundle.putString("title", place.getTitle());
+                                bundle.putString("address", place.getAddress());
+                                bundle.putString("phone", place.getPhone());
+                                bundle.putString("activity", place.getActivity());
+                                bundle.putString("lat", place.getLat());
+                                bundle.putString("lng", place.getLng());
+                                bundle.putInt("user_id", place.getUser_id());
+                                Intent intent = new Intent(context, PlaceDetailActivity.class);
+                                intent.putExtra("PLACE_DETAIL", bundle);
+                                context.startActivity(intent);
                                 break;
                             case R.id.delete:
 

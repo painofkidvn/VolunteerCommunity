@@ -1,19 +1,13 @@
 package com.hat_dtu.volunteercommunity.fragment;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -24,7 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hat_dtu.volunteercommunity.R;
-import com.hat_dtu.volunteercommunity.adapter.PlacesAdapter;
+import com.hat_dtu.volunteercommunity.adapter.MyPlaceAdapter;
 import com.hat_dtu.volunteercommunity.app.AppConfig;
 import com.hat_dtu.volunteercommunity.app.AppController;
 import com.hat_dtu.volunteercommunity.model.Place;
@@ -38,16 +32,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by paino on 4/18/2017.
+ * Created by paino on 4/2/2017.
  */
 
-public class PlaceFragment extends Fragment{
-    private static final String TAG = PlaceFragment.class.getSimpleName();
+public class MyPlaceFragment extends Fragment {
+    private static final String TAG = MyPlaceFragment.class.getSimpleName();
     ProgressDialog progressDialog;
     RecyclerView recyclerView;
-    PlacesAdapter placeAdapter;
+    MyPlaceAdapter placeAdapter;
     ArrayList<Place> places = new ArrayList<>();
-    public PlaceFragment() {
+    public MyPlaceFragment() {
     }
 
     @Override
@@ -56,7 +50,6 @@ public class PlaceFragment extends Fragment{
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
-        setHasOptionsMenu(true);
         onLoading();
 
     }
@@ -64,12 +57,12 @@ public class PlaceFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_places, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_place, container, false);
 
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.rv_my_recycler_view);
+        recyclerView = (RecyclerView)view.findViewById(R.id.rv_recycler_view);
         recyclerView.setHasFixedSize(true);
-        placeAdapter = new PlacesAdapter(places, getContext());
+        placeAdapter = new MyPlaceAdapter(places, getContext());
         recyclerView.setAdapter(placeAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -87,60 +80,12 @@ public class PlaceFragment extends Fragment{
             progressDialog.dismiss();
 
     }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.search_menu, menu);
-
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-        SearchManager searchManager = (SearchManager) getContext().getSystemService(getContext().SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                final ArrayList<Place> filteredList = filter(places, newText);
-                if(filteredList.size() > 0){
-                    placeAdapter.setFilter(filteredList);
-                    return true;
-                }
-                else {
-                    Toast.makeText(getContext(), "Not Found", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        });
-
-    }
-    private ArrayList<Place> filter (ArrayList<Place> places, String query){
-        query = query.toLowerCase().trim();
-        final ArrayList<Place> filteredList = new ArrayList<>();
-        for(Place place : places){
-            if(place.getTitle().toLowerCase().contains(query)||
-                    place.getAddress().toLowerCase().contains(query))
-                filteredList.add(place);
-        }
-        placeAdapter = new PlacesAdapter(filteredList, getContext());
-        recyclerView.setAdapter(placeAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        placeAdapter.notifyDataSetChanged();
-        return filteredList;
-
-
-    }
     public void onLoading(){
-        String tag_string_req = "req_get_all_places";
+        String tag_string_req = "req_get_all_place";
         progressDialog.setMessage("Loading ...");
         showDialog();
         StringRequest strReq = new StringRequest(Request.Method.GET,
-                AppConfig.URL_PLACE_A, new Response.Listener<String>() {
+                AppConfig.URL_PLACE_F, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -178,7 +123,7 @@ public class PlaceFragment extends Fragment{
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getContext(),
-                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

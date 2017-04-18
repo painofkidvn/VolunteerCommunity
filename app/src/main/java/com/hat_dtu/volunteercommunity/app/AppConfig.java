@@ -17,5 +17,7 @@ public class AppConfig {
     public static String URL_PLACE_L = "http://slimapp.esy.es/slimapp/places/";
     public static String URL_PLACE_A = "http://slimapp.esy.es/slimapp/place";
     public static String API_KEY = "";
-    public static String USER_ID = "";
+    public static String KEY_NAME = "";
+    public static String KEY_EMAIL = "";
+    public static Boolean isMove = false;
 }

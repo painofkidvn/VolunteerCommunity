@@ -1,24 +1,24 @@
 package com.hat_dtu.volunteercommunity.activity;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.hat_dtu.volunteercommunity.R;
-import com.hat_dtu.volunteercommunity.fragment.PlaceFragment;
+import com.hat_dtu.volunteercommunity.app.AppConfig;
+import com.hat_dtu.volunteercommunity.fragment.MyPlaceFragment;
 import com.hat_dtu.volunteercommunity.fragment.HomeFragment;
+import com.hat_dtu.volunteercommunity.fragment.PlaceFragment;
 import com.hat_dtu.volunteercommunity.helper.SQLiteHandler;
 import com.hat_dtu.volunteercommunity.helper.SessionManager;
 
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private SessionManager session;
     private TextView tvName, tvEmail;
     private Fragment temp;
+    private LatLng latLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +46,21 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
-
+        Bundle bundle = getIntent().getBundleExtra("MOVING");
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, new HomeFragment());
+            if(AppConfig.isMove == false)
+                fragmentTransaction.replace(R.id.container_body, new HomeFragment());
+            else {
+                latLng = new LatLng(Double.parseDouble(bundle.getString("LAT")), Double.parseDouble(bundle.getString("LNG")));
+                fragmentTransaction.replace(R.id.container_body, new HomeFragment(latLng));
+            }
             fragmentTransaction.commit();
             getSupportActionBar().setTitle("Home");
 
 
         }
-
         // SqLite database handler
         db = new SQLiteHandler(getApplicationContext());
 
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (!session.isLoggedIn()) {
             logoutUser();
         }
+
+
 
 
     }
@@ -82,29 +89,21 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         startActivity(intent);
         finish();
     }
-    private boolean show = true;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+       /* final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-        MenuItem refreshItem = menu.findItem(R.id.action_refresh);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        if(show) {
-            searchItem.setVisible(true);
-            refreshItem.setVisible(true);
-        }
-        else{
-            searchItem.setVisible(false);
-            refreshItem.setVisible(false);
-        }
 
+        MenuItem searchItem = menu.findItem(R.id.action_search);*/
+        MenuItem refreshItem = menu.findItem(R.id.action_refresh);
         return true;
     }
+    private int choice = 1;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -114,9 +113,26 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if(id == R.id.action_refresh){
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, new HomeFragment());
-            fragmentTransaction.commit();
-            getSupportActionBar().setTitle("Home");
+
+            switch (choice){
+                case 1:
+                    fragmentTransaction.replace(R.id.container_body, new HomeFragment());
+                    fragmentTransaction.commit();
+                    getSupportActionBar().setTitle("Home");
+                    break;
+                case 2:
+                    fragmentTransaction.replace(R.id.container_body, new MyPlaceFragment());
+                    fragmentTransaction.commit();
+                    getSupportActionBar().setTitle("MyPlace");
+                    break;
+                case 3:
+                    fragmentTransaction.replace(R.id.container_body, new PlaceFragment());
+                    fragmentTransaction.commit();
+                    getSupportActionBar().setTitle("Place");
+                    break;
+                default:
+                    break;
+            }
         }
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_logout){
@@ -139,14 +155,21 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         switch (position) {
             case 0:
                 fragment = new HomeFragment();
-                temp = fragment;
-                show = true;
+                AppConfig.isMove = false;
                 title = getString(R.string.title_home);
+                choice = 1;
                 break;
             case 1:
+                fragment = new MyPlaceFragment();
+                title = getString(R.string.title_my_place);
+                AppConfig.isMove = false;
+                choice = 2;
+                break;
+            case 2:
                 fragment = new PlaceFragment();
-                show = false;
-                title = getString(R.string.title_charity);
+                title = getString(R.string.title_places);
+                AppConfig.isMove = false;
+                choice = 3;
                 break;
             default:
                 break;

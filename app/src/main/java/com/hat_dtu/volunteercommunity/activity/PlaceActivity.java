@@ -35,7 +35,8 @@ public class PlaceActivity extends AppCompatActivity {
     private EditText etTitle, etAddress, etPhone, etActivity;
     private Button btnCharityRes;
     private TextInputLayout inputLayoutTitle, inputLayoutAddress, inputLayoutPhone, inputLayoutActivity;
-    private String title, address, phone, activity, rating = "0", lat, lng;
+    private String title, address, phone, activity, lat, lng;
+    private int user_id;
     private ProgressDialog progressDialog;
     private SQLiteHandler db;
     @Override
@@ -105,8 +106,7 @@ public class PlaceActivity extends AppCompatActivity {
                 Log.d(TAG, "Create Response: " + response.toString());
                 hideDialog();
                 try {
-                    Log.d(TAG, response);
-                    JSONObject jObj = new JSONObject(response.substring(3));
+                    JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
 
                     if (!error) {
@@ -121,7 +121,7 @@ public class PlaceActivity extends AppCompatActivity {
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

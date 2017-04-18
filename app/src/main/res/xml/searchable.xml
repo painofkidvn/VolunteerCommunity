@@ -1,0 +1,10 @@
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:searchSuggestAuthority="com.hat_dtu.volunteercommunity.placesuggestion"
+    android:searchSuggestIntentAction="android:intent.action.view"
+    android:hint="@string/search_hint"
+    android:label="@string/search_label"
+    android:searchSuggestThreshold="2"
+    android:searchSettingsDescription="string resource"
+    android:searchMode="queryRewriteFromText"
+    android:searchSuggestSelection = " ?"
+    />
