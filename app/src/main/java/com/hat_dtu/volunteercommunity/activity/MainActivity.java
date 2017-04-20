@@ -46,18 +46,27 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
-        Bundle bundle = getIntent().getBundleExtra("MOVING");
+
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            if(AppConfig.isMove == false)
-                fragmentTransaction.replace(R.id.container_body, new HomeFragment());
-            else {
-                latLng = new LatLng(Double.parseDouble(bundle.getString("LAT")), Double.parseDouble(bundle.getString("LNG")));
-                fragmentTransaction.replace(R.id.container_body, new HomeFragment(latLng));
+            Bundle bundle = getIntent().getBundleExtra("MOVING");
+            if(AppConfig.isMyPlace == true){
+                fragmentTransaction.replace(R.id.container_body, new MyPlaceFragment());
+                fragmentTransaction.commit();
+                getSupportActionBar().setTitle("My Place");
+                AppConfig.isMyPlace = false;
+
+            }else {
+                if(AppConfig.isMove == false)
+                    fragmentTransaction.replace(R.id.container_body, new HomeFragment());
+                else {
+                    latLng = new LatLng(Double.parseDouble(bundle.getString("LAT")), Double.parseDouble(bundle.getString("LNG")));
+                    fragmentTransaction.replace(R.id.container_body, new HomeFragment(latLng));
+                }
+                fragmentTransaction.commit();
+                getSupportActionBar().setTitle("Home");
             }
-            fragmentTransaction.commit();
-            getSupportActionBar().setTitle("Home");
 
 
         }

@@ -62,6 +62,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         holder.address.setText(place.getAddress());
         holder.phone.setText(place.getPhone());
         holder.activity.setText(place.getActivity());
+        holder.joined.setText(place.getJoined());
 
         final boolean isExpanded = position == mExpandedPosition;
         holder.activity.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
@@ -99,7 +100,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView title, address, phone, activity;
+        private TextView title, address, phone, activity, joined;
         private ImageButton btn;
         public CardView cardView;
 
@@ -110,6 +111,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
             address = (TextView) itemView.findViewById(R.id.tv_a_address);
             phone = (TextView) itemView.findViewById(R.id.tv_a_phone);
             activity = (TextView) itemView.findViewById(R.id.tv_a_activity);
+            joined = (TextView)itemView.findViewById(R.id.tv_a_joined);
             btn = (ImageButton) itemView.findViewById(R.id.btn_location);
 
         }

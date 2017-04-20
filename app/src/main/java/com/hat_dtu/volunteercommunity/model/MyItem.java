@@ -13,6 +13,9 @@ public class MyItem implements ClusterItem {
     private final String address;
     private final String phone;
     private final String activity;
+    private String joined;
+    private int id;
+    private boolean isOwner;
 
     public MyItem(double lat, double lng, String title, String address, String phone, String activity) {
         this.position = new LatLng(lat, lng);
@@ -20,6 +23,14 @@ public class MyItem implements ClusterItem {
         this.address = address;
         this.phone = phone;
         this.activity = activity;
+    }
+    public MyItem(double lat, double lng, String title, String address, String phone, String activity, String joined) {
+        this.position = new LatLng(lat, lng);
+        this.title = title;
+        this.address = address;
+        this.phone = phone;
+        this.activity = activity;
+        this.joined = joined;
     }
 
     @Override
@@ -37,6 +48,26 @@ public class MyItem implements ClusterItem {
 
     public String getActivity() {
         return this.activity;
+    }
+
+    public String getJoined() {
+        return joined;
+    }
+    public void setJoined(String joined){this.joined = joined;}
+
+    public int getId() {
+        return id;
+    }
+    public boolean getIsOwner(){
+        return this.isOwner;
+    }
+    public void setIsOwner(boolean isOwner){
+        this.isOwner = isOwner;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

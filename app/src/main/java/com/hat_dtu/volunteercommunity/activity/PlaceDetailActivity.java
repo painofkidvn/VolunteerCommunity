@@ -2,6 +2,8 @@ package com.hat_dtu.volunteercommunity.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,11 +20,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.hat_dtu.volunteercommunity.R;
 import com.hat_dtu.volunteercommunity.app.AppConfig;
 import com.hat_dtu.volunteercommunity.app.AppController;
+import com.hat_dtu.volunteercommunity.fragment.MyPlaceFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlaceDetailActivity extends AppCompatActivity {
@@ -64,8 +69,11 @@ public class PlaceDetailActivity extends AppCompatActivity {
         btnCharityRes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                title = etTitle.getText().toString();
+                address = etAddress.getText().toString();
+                phone = etPhone.getText().toString();
+                activity = etActivity.getText().toString();
+                getLocation(address);
                 onUpdate(id);
             }
         });
@@ -87,8 +95,8 @@ public class PlaceDetailActivity extends AppCompatActivity {
         progressDialog.setMessage("Updating ...");
         showDialog();
         AppConfig.URL_PLACE_L = AppConfig.URL_PLACE_L+id;
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.URL_PLACE_F, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.PUT,
+                AppConfig.URL_PLACE_L, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -101,20 +109,21 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
                     if (!error) {
 
-                        Toast.makeText(getApplicationContext(), "Place successfully updated", Toast.LENGTH_LONG).show();
-                        AppConfig.URL_PLACE_L = "http://slimapp.esy.es/slimapp/places/";
-                        finish();
+                        Toast.makeText(getApplicationContext(), "Place successfully updated", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(PlaceDetailActivity.this, MainActivity.class);
+                        AppConfig.isMyPlace = true;
+                        startActivity(intent);
                     } else {
 
                         // Error occurred in registration. Get the error
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
-                                errorMsg == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -125,7 +134,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Updating Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
                 hideDialog();
             }
         }) {
@@ -151,9 +160,32 @@ public class PlaceDetailActivity extends AppCompatActivity {
             }
 
         };
-
+        AppConfig.URL_PLACE_L = "http://slimapp.esy.es/slimapp/places/";
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+    private void getLocation(String add){
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+
+        try {
+            //Get latLng from String
+            address = coder.getFromLocationName(add,5);
+
+            //check for null
+            if (address == null) {
+                return;
+            }
+
+            //Lets take first possibility from the all possibilities.
+            Address location=address.get(0);
+            lat = String.valueOf(location.getLatitude());
+            lng = String.valueOf(location.getLongitude());
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }

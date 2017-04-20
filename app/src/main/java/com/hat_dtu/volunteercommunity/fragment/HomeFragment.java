@@ -3,37 +3,29 @@ package com.hat_dtu.volunteercommunity.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.MatrixCursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -74,22 +66,29 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private ProgressDialog progressDialog;
     private FloatingActionButton fabAdd;
     private TextView tvTitle, tvAddress, tvPhone, tvActivity;
+    private Button btnJoin;
     private ArrayList<Place>  places = new ArrayList<>();
     private FrameLayout frameLayout;
     private SQLiteHandler db;
     private LatLng latLng;
+    String isJoin = "";
+    String isOwner = "";
     ClusterManager<MyItem> clusterManager;
-
+    MyItem item;
+    ArrayList<MyItem> items = new ArrayList<>();
     public HomeFragment() {
+        AppConfig.isMove = false;
     }
     public HomeFragment(LatLng latLng){
         this.latLng = latLng;
+        AppConfig.isMove = true;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initPermission();
         db = new SQLiteHandler(getContext());
+
 
 
 
@@ -103,10 +102,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         tvActivity = (TextView)rootView.findViewById(R.id.tv_btm_activity);
         tvAddress = (TextView)rootView.findViewById(R.id.tv_btm_address);
         tvPhone = (TextView)rootView.findViewById(R.id.tv_btm_phone);
+        btnJoin = (Button)rootView.findViewById(R.id.btn_btm_join);
         fabAdd = (FloatingActionButton) rootView.findViewById(R.id.fab_add_charity);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppConfig.isMove = false;
                 Intent intent = new Intent(getActivity(), PlaceActivity.class);
                 startActivity(intent);
             }
@@ -166,10 +167,61 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-
+                items.clear();
                 onLoadingAll();
+                clusterManager.clearItems();
+                clusterManager.addItems(items);
+                clusterManager.cluster();
                 if(AppConfig.isMove == true)
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+                clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyItem>() {
+                    @Override
+                    public boolean onClusterClick(Cluster<MyItem> cluster) {
+
+                        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                            bottomSheetBehavior.setPeekHeight(120);
+                        } else {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                            bottomSheetBehavior.setPeekHeight(0);
+                        }
+                        return true;
+                    }
+                });
+                clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
+                    @Override
+                    public boolean onClusterItemClick(final MyItem myItem) {
+                        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                            tvTitle.setText(myItem.getTitle());
+                            tvPhone.setText(myItem.getPhone());
+                            tvAddress.setText(myItem.getSnippet());
+                            tvActivity.setText(myItem.getActivity());
+                            if(myItem.getJoined().equals("Joined")){
+                                btnJoin.setText(myItem.getJoined());
+                                btnJoin.setBackgroundColor(Color.GRAY);
+                            }else {
+                                btnJoin.setText(myItem.getJoined());
+                                btnJoin.setBackgroundResource(R.color.colorPrimary);
+
+                            }
+                            if(myItem.getIsOwner() == true)
+                                btnJoin.setEnabled(false);
+                            else
+                                btnJoin.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        setUpButton(myItem.getId());
+                                }
+                            });
+                            bottomSheetBehavior.setPeekHeight(120);
+                        } else {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                            bottomSheetBehavior.setPeekHeight(0);
+                        }
+                        return true;
+                    }
+                });
 
             }
         });
@@ -217,7 +269,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 }
                 // Permission don't granted and dont show dialog again.
                 else {
-                    Toast.makeText(getContext(), "Permission don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Permission don't granted and don't show dialog again ", Toast.LENGTH_SHORT).show();
                 }
                 //Register permission
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -255,7 +307,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                     if (!error) {
                         places.clear();
-                        MyItem item;
+
                         JSONArray jsonArray = jObj.getJSONArray("places");
                         for(int i = 0; i < jsonArray.length(); i++){
 
@@ -270,48 +322,27 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                             int user_id = jsonObject.getInt("user_id");
                             map.setOnCameraIdleListener(clusterManager);
                             map.setOnMarkerClickListener(clusterManager);
-                            item = new MyItem(Double.parseDouble(lat), Double.parseDouble(lng), title, address, phone, activity);
+
+
 
                             places.add(new Place(id, title, address, phone, activity, lat, lng, user_id));
-                            db.addPlace(title, address, phone, activity, lat, lng, String.valueOf(user_id));
+                            item = new MyItem(Double.parseDouble(lat), Double.parseDouble(lng),
+                                    title, address, phone, activity);
+                            item.setId(id);
+                            setUpJoinedValue(id);
+                            items.add(item);
+
                             clusterManager.addItem(item);
 
                             clusterManager.cluster();
 
+
                         }
 
-                        Toast.makeText(getActivity(), "Loaded", Toast.LENGTH_LONG).show();
-                        clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyItem>() {
-                            @Override
-                            public boolean onClusterClick(Cluster<MyItem> cluster) {
 
-                                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
-                                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                                    bottomSheetBehavior.setPeekHeight(120);
-                                } else {
-                                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                                    bottomSheetBehavior.setPeekHeight(0);
-                                }
-                                return true;
-                            }
-                        });
-                        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
-                            @Override
-                            public boolean onClusterItemClick(MyItem myItem) {
-                                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
-                                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                                    tvTitle.setText(myItem.getTitle());
-                                    tvPhone.setText(myItem.getPhone());
-                                    tvAddress.setText(myItem.getSnippet());
-                                    tvActivity.setText(myItem.getActivity());
-                                    bottomSheetBehavior.setPeekHeight(120);
-                                } else {
-                                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                                    bottomSheetBehavior.setPeekHeight(0);
-                                }
-                                return true;
-                            }
-                        });
+
+                        Toast.makeText(getActivity(), "Loaded", Toast.LENGTH_SHORT).show();
+
 
                     } else {
 
@@ -319,11 +350,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getActivity(),
-                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Json error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -333,7 +364,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Creating Error: " + error.getMessage());
                 Toast.makeText(getActivity(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
                 hideDialog();
             }
         }) {
@@ -351,6 +382,160 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
+    public void setUpJoinedValue(final int id){
+        //joinList.clear();
+        String tag_string_req = "req_load_join";
+        AppConfig.URL_JOIN_USER = AppConfig.URL_JOIN_USER + "/" + id;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                AppConfig.URL_JOIN_USER, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Create Response: " + response.toString());
+
+                try {
+
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+
+                    if (!error) {
+                        isJoin =  jObj.getString("isJoin");
+                        isOwner = jObj.getString("isOwner");
+                        Log.e("CHAN QUA", isJoin);
+                        for(int i = 0; i < places.size(); i++){
+                            if (places.get(i).getId() == id) {
+                                if (isJoin.equals("1")) {
+                                    places.get(i).setJoined("Joined");
+                                    items.get(i).setJoined("Joined");
+                                } else {
+                                    places.get(i).setJoined("Join");
+                                    items.get(i).setJoined("Join");
+                                }
+                                if (isOwner.equals("1"))
+                                    items.get(i).setIsOwner(true);
+                                else items.get(i).setIsOwner(false);
+
+                            }
+                        }
+
+                    } else {
+                        Log.d(TAG, "Error");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Creating Error: " + error.getMessage());
+
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("place_id", String.valueOf(id));
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                headers.put("Authorization", AppConfig.API_KEY);
+                return headers;
+            }
+
+
+        };
+
+        AppConfig.URL_JOIN_USER = "http://slimapp.esy.es/slimapp/join";
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+
+    }
+    public void setUpButton(final int id){
+        //joinList.clear();
+        String tag_string_req = "req_set_join";
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.URL_JOIN_USER, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Create Response: " + response.toString());
+                hideDialog();
+                try {
+
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+
+                    if (!error) {
+
+                        isJoin =  jObj.getString("isJoin");
+                        for(int i = 0; i < places.size(); i++){
+                            if (places.get(i).getId() == id) {
+                                LatLng latLng = items.get(i).getPosition();
+                                if (isJoin.equals("1")) {
+                                    places.get(i).setJoined("Joined");
+                                    items.get(i).setJoined("Joined");
+                                } else {
+                                    places.get(i).setJoined("Join");
+                                    items.get(i).setJoined("Join");
+                                }
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.container_body, new HomeFragment(latLng));
+                                fragmentTransaction.commit();
+                            }
+                        }
+
+
+                    } else {
+                        Log.d(TAG, "Error");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Creating Error: " + error.getMessage());
+                hideDialog();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("place_id", String.valueOf(id));
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                headers.put("Authorization", AppConfig.API_KEY);
+                return headers;
+            }
+
+
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+
+    }
+
 
 }
 

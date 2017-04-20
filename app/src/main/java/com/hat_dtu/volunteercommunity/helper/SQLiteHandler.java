@@ -159,7 +159,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing charity detail into database
      */
-    public void addPlace(String title, String address, String phone, String activity, String lat, String lng, String user_id) {
+    /*public void addPlace(String title, String address, String phone, String activity, String lat, String lng, String user_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         //values.put(KEY_ID_C, id);
@@ -176,7 +176,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
 
         Log.d(TAG, "New Place inserted into sqlite: " + new_id);
-    }
+    }*/
 
     /**
      * Getting charity data from database

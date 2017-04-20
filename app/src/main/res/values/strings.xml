@@ -16,6 +16,8 @@
     <string name="activity">Activity</string>
     <string name="search_label">Search</string>
     <string name="search_hint">Search Place</string>
+    <string name="update">UPDATE</string>
+    <string name="create">CREATE</string>
 
     <string name="err_msg_fullname">Enter your Full name</string>
     <string name="err_msg_email">Enter your valid email address</string>

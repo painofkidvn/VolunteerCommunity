@@ -43,6 +43,7 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
     private ArrayList<Place> places;
     private int mExpandedPosition = -1;
     private Context context;
+    private String result = "Joined ";
     private LayoutInflater mInflater;
     public MyPlaceAdapter(ArrayList<Place> places, Context context){
         this.places = places;
@@ -65,7 +66,7 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
         holder.address.setText(place.getAddress());
         holder.phone.setText(place.getPhone());
         holder.activity.setText(place.getActivity());
-
+        holder.joined.setText(place.getJoined());
         final boolean isExpanded = position== mExpandedPosition;
         holder.activity.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         holder.itemView.setActivated(isExpanded);
@@ -104,7 +105,8 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
 
                                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
                                 alertDialog.setCancelable(true);
-                                alertDialog.setTitle("Delete Place!").setMessage("Are you sure you want to delete this Place?");
+                                alertDialog.setTitle("Delete Place!")
+                                        .setMessage("Are you sure you want to delete this Place?");
                                 alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -146,20 +148,20 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
                     if (!error) {
                         removeAt(pos);
                         String message = jObj.getString("message");
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                         AppConfig.URL_PLACE_L = "http://slimapp.esy.es/slimapp/places/";
 
-
+                        notifyDataSetChanged();
                     } else {
 
                         // Error occurred in registration. Get the error
                         // message
                         String errorMsg = jObj.getString("message");
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, errorMsg.trim() == "" ? "Error Connection" : errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Json error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -170,7 +172,7 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Creating Error: " + error.getMessage());
                 Toast.makeText(context,
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
@@ -194,7 +196,7 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView title, address, phone, activity, options;
+        private TextView title, address, phone, activity, options, joined;
         public CardView cardView;
 
         public MyViewHolder(View itemView) {
@@ -204,6 +206,7 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
             address = (TextView)itemView.findViewById(R.id.tv_address);
             phone = (TextView)itemView.findViewById(R.id.tv_phone);
             activity = (TextView)itemView.findViewById(R.id.tv_activity);
+            joined = (TextView)itemView.findViewById(R.id.tv_joined);
             options = (TextView)itemView.findViewById(R.id.tv_options);
 
         }

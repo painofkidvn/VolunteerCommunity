@@ -46,6 +46,7 @@ public class PlaceFragment extends Fragment{
     ProgressDialog progressDialog;
     RecyclerView recyclerView;
     PlacesAdapter placeAdapter;
+    String result = "";
     ArrayList<Place> places = new ArrayList<>();
     public PlaceFragment() {
     }
@@ -167,10 +168,11 @@ public class PlaceFragment extends Fragment{
                             int user_id = jsonObject.getInt("user_id");
 
                             places.add(new Place(id, title, address, phone, activity, lat, lng, user_id));
+                            setUpJoinedValue(id);
 
                         }
                         placeAdapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(), "Loaded", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Loaded", Toast.LENGTH_SHORT).show();
 
                     } else {
 
@@ -178,7 +180,7 @@ public class PlaceFragment extends Fragment{
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getContext(),
-                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -191,7 +193,7 @@ public class PlaceFragment extends Fragment{
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Creating Error: " + error.getMessage());
                 Toast.makeText(getActivity(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
                 hideDialog();
             }
         }) {
@@ -206,6 +208,61 @@ public class PlaceFragment extends Fragment{
 
         };
 
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+    public void setUpJoinedValue(final int id){
+
+        String tag_string_req = "req_load_joined";
+        AppConfig.URL_JOIN =  AppConfig.URL_JOIN + "/" + id;
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                AppConfig.URL_JOIN, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Create Response: " + response.toString());
+
+                try {
+
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+
+                    if (!error) {
+                        result =  jObj.getString("joined");
+                        for(int i = 0; i < places.size(); i++){
+                            if (places.get(i).getId() == id)
+                                places.get(i).setJoined("Joined: " + result);
+                        }
+                        placeAdapter.notifyDataSetChanged();
+
+                    } else {
+                        Log.d(TAG, "Error");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Creating Error: " + error.getMessage());
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                headers.put("Authorization", AppConfig.API_KEY);
+                return headers;
+            }
+
+
+        };
+        AppConfig.URL_JOIN = "http://slimapp.esy.es/slimapp/joined";
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }

@@ -6,7 +6,7 @@ package com.hat_dtu.volunteercommunity.model;
 
 public class Place {
     private int id, user_id;
-    private String title, address, phone, activity, lat, lng;
+    private String title, address, phone, activity, lat, lng, joined;
     private boolean mChecked;
     private boolean mActivateExpansion = false;
 
@@ -23,6 +23,25 @@ public class Place {
         this.lat = lat;
         this.lng = lng;
         this.user_id = user_id;
+    }
+    public Place(int id, String title, String address, String phone, String activity, String lat, String lng, int user_id, String joined) {
+        this.id = id;
+        this.title = title;
+        this.address = address;
+        this.phone = phone;
+        this.activity = activity;
+        this.lat = lat;
+        this.lng = lng;
+        this.user_id = user_id;
+        this.joined = joined;
+    }
+
+    public String getJoined() {
+        return this.joined;
+    }
+
+    public void setJoined(String joined) {
+        this.joined = joined;
     }
 
     public int getUser_id() {

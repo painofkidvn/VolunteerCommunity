@@ -43,6 +43,12 @@
                 android:layout_height="wrap_content"
                 android:text="09777277575"></TextView>
             <TextView
+                android:id="@+id/tv_joined"
+                android:layout_below="@+id/tv_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Joined: 10"></TextView>
+            <TextView
                 android:id="@+id/tv_options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

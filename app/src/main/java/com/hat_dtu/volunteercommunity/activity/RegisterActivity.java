@@ -228,7 +228,7 @@ public class RegisterActivity extends AppCompatActivity {
                         AppConfig.KEY_NAME = name;
                         AppConfig.KEY_EMAIL = email;
                         session.setLogin(true);
-                        Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_SHORT).show();
 
                         // Launch login activity
                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
@@ -240,11 +240,11 @@ public class RegisterActivity extends AppCompatActivity {
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
-                                errorMsg == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -254,7 +254,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Registration Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
                 hideDialog();
             }
         }) {

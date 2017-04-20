@@ -111,9 +111,14 @@ public class PlaceActivity extends AppCompatActivity {
 
                     if (!error) {
 
-                        Toast.makeText(getApplicationContext(), "Place Location successfully created", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Place Location successfully created", Toast.LENGTH_SHORT).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("LAT", lat);
+                        bundle.putString("LNG", lng);
                         Intent intent = new Intent(PlaceActivity.this, MainActivity.class);
+                        intent.putExtra("MOVING", bundle);
                         startActivity(intent);
+                        AppConfig.isMove = true;
                         finish();
                     } else {
 
@@ -121,11 +126,11 @@ public class PlaceActivity extends AppCompatActivity {
                         // message
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(),
-                                errorMsg == "" ? "Connection error": errorMsg, Toast.LENGTH_LONG).show();
+                                errorMsg.trim() == "" ? "Connection error": errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -136,7 +141,7 @@ public class PlaceActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Creating Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
                 hideDialog();
             }
         }) {
