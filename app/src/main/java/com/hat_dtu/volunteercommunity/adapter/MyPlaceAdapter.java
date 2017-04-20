@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.transition.TransitionManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -103,10 +104,10 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
                                 break;
                             case R.id.delete:
 
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                                alertDialog.setCancelable(true);
-                                alertDialog.setTitle("Delete Place!")
-                                        .setMessage("Are you sure you want to delete this Place?");
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialog));
+
+                                alertDialog.setTitle("Delete Place!");
+                                alertDialog.setMessage("Are you sure you want to delete this Place?");
                                 alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -114,6 +115,7 @@ public class MyPlaceAdapter extends RecyclerView.Adapter<MyPlaceAdapter.MyViewHo
 
                                     }
                                 });
+                                alertDialog.setCancelable(true);
                                 alertDialog.show();
                                 break;
 
